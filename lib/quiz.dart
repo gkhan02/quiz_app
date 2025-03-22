@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:quiz_app/data/questions.dart';
 import 'package:quiz_app/questions_screen.dart';
@@ -11,41 +10,50 @@ class Quiz extends StatefulWidget {
   State<Quiz> createState() {
     return _QuizState();
   }
-  //Write other code to change the state
 }
 
 class _QuizState extends State<Quiz> {
-  List<String> selectedAnswers = [];
+  List<String> selectedAnswer = [];
   Widget? activeScreen;
 
   void chooseAnswer(String answer) {
-    selectedAnswers.add(answer);
-    if (selectedAnswers.length == questions.length) {
-      //switch to the results screen instead
+    selectedAnswer.add(answer);
+    if (selectedAnswer.length == questions.length) {
       setState(() {
-        selectedAnswers = [];
-        activeScreen = ResultsScreen(chosenAnswers: selectedAnswers,);
+        // selectedAnswer = [];
+        activeScreen = ResultsScreen(
+          chosenAnswers: selectedAnswer, resetQuiz: resetQuiz,
+        );
       });
     }
   }
 
-  @override
   void initState() {
     activeScreen = StartScreen(switchScreen);
     super.initState();
   }
 
   void switchScreen() {
+    setState(
+      () {
+        activeScreen = QuestionsScreen(
+          onSelectedAnswer: chooseAnswer,
+        );
+      },
+    );
+  }
+
+  void resetQuiz() {
     setState(() {
-      activeScreen = QuestionsScreen(
-        onSelectedAnswer: chooseAnswer,
-      );
+      selectedAnswer = [];
+      activeScreen = StartScreen(switchScreen);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
@@ -55,7 +63,6 @@ class _QuizState extends State<Quiz> {
               colors: [
                 Color.fromARGB(255, 78, 13, 151),
                 Colors.blue,
-                Color.fromARGB(255, 107, 15, 168),
               ],
             ),
           ),
@@ -65,4 +72,3 @@ class _QuizState extends State<Quiz> {
     );
   }
 }
-
